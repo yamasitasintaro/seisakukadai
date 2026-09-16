@@ -30,12 +30,15 @@ class MyHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         print("GET:", self.path)
 
-        # if self.path == "/":
+        path = self.path.split("?")[0]
+
+        
         if self.path.startswith("/static/"):
             self.serve_static(self.path)
             return
         
-        if self.path == "/":
+        if path == "/":
+            print("ゲーム開始画面を表示します")
             html = self.render_template("index.html")
 
             self.send_response(200)
@@ -70,7 +73,7 @@ class MyHandler(BaseHTTPRequestHandler):
         
         if self.path.startswith("/load"):
 
-            html = self.render_template("lode.html")
+            html = self.render_template("load.html")
 
             save_html = ""
 
@@ -126,6 +129,7 @@ class MyHandler(BaseHTTPRequestHandler):
             self.wfile.write(html.encode("utf-8"))
 
             return
+        
         if self.path.startswith("/save"):
             html = self.render_template("save.html")
 
@@ -181,10 +185,15 @@ class MyHandler(BaseHTTPRequestHandler):
             self.wfile.write(html.encode("utf-8"))
 
             return
+        self.send_response(404)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.end_headers()
+        self.wfile.write("ページが見つかりません".encode("utf-8"))
 
         
     # ゲームの挙動やボタン操作など
     def do_POST(self):
+        print("POST:", self.path)
         # if self.path == "/":
         
         if self.path == "/start":
@@ -215,6 +224,7 @@ class MyHandler(BaseHTTPRequestHandler):
             self.send_header("Content-type", "text/html; charset=utf-8")
             self.end_headers()
             self.wfile.write(html.encode("utf-8"))
+            return
 
        
         if self.path == "/save":
@@ -250,6 +260,12 @@ class MyHandler(BaseHTTPRequestHandler):
             filename = f"save{slot}.json"
 
             save_data = load_json(filename)
+
+            if not save_data:
+                self.send_response(303)
+                self.send_header("Location", "/load")
+                self.end_headers()
+                return
 
             player_status.clear()
             player_status.update(save_data)
