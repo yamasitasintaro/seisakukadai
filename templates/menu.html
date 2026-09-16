@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>テキストRPGゲーム</title>
+</head>
+<body>
+    <h1>テキストRPGゲーム</h1>
+    <hr>
+
+        <button>進む</button>
+        <button>休む</button>
+        {{ p_status }}
+    <hr>
+    <form method="get" action="/save">
+        <button type="submit">
+            セーブ
+        </button>
+    </form>
+    
+     <form method="post" action="/end">
+        <button type="submit">
+            終了
+        </button>
+    </form>
+
+</body>
+</html>
